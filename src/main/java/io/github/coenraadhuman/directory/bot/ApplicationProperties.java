@@ -17,6 +17,8 @@ public class ApplicationProperties {
 
     public static final String DATABASE_DIRECTORY = "database.directory";
     public static final String DATABASE_CONNECTION = "database.connection";
+    public static final String SOURCE_DIRECTORY = "source.directory";
+    public static final String TARGET_DIRECTORY = "target.directory";
 
     private ApplicationProperties() {
         throw new RuntimeException("This is a utility class and should not be constructed");
@@ -40,6 +42,10 @@ public class ApplicationProperties {
         // Todo: Maybe just extend the properties have optional instead of exceptions.
         Optional.ofNullable(System.getenv("DATABASE_DIRECTORY"))
                 .ifPresent(databaseDirectory -> properties.putIfAbsent(DATABASE_DIRECTORY, databaseDirectory));
+        Optional.ofNullable(System.getenv("SOURCE_DIRECTORY"))
+                .ifPresent(databaseDirectory -> properties.putIfAbsent(SOURCE_DIRECTORY, databaseDirectory));
+        Optional.ofNullable(System.getenv("TARGET_DIRECTORY"))
+                .ifPresent(databaseDirectory -> properties.putIfAbsent(TARGET_DIRECTORY, databaseDirectory));
     }
 
     private static Properties readFileProperties() {

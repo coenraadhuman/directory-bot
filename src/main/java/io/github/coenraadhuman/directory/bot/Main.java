@@ -7,19 +7,21 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import static io.github.coenraadhuman.directory.bot.ApplicationProperties.SOURCE_DIRECTORY;
+import static io.github.coenraadhuman.directory.bot.ApplicationProperties.TARGET_DIRECTORY;
+
 public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args)  {
         var properties = ApplicationProperties.retrieveApplicationProperties();
+
         Database.migrate(properties);
         var jdbi = Database.retrieveDatabaseConnection(properties);
 
-        // Start never ending process that monitors primary directory, what about target directory?
-
-        var sourceRootDirectory = Paths.get("/Users/coenraadhuman/Development/personal/directory-bot-test/a");
-        var targetRootDirectory = Paths.get("/Users/coenraadhuman/Development/personal/directory-bot-test/b");
+        var sourceRootDirectory = Paths.get(properties.getProperty(SOURCE_DIRECTORY));
+        var targetRootDirectory = Paths.get(properties.getProperty(TARGET_DIRECTORY));
 
         try (var sourcePaths = Files.walk(sourceRootDirectory)) {
             sourcePaths

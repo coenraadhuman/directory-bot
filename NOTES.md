@@ -10,3 +10,24 @@ FUTURE:
 
 thinking track diffs
 -> start with empty target, makes most sense and database tracks of everything
+
+
+
+PROCESS:
+
+1. Load properties
+2. Migrate database
+3. Get database connection
+4. Get source directory from properties
+5. Get target directory from properties
+6. Iterate over all source directory files
+   - Determine target directory
+   - Determine target path
+   - Does subdirectories exist in target? If not create.
+   - Does the target exist as a symbolic link? 
+     - No, then create symbolic link.
+     - Yes:
+       - Is the symbolic link still valid, points to existing target? If not delete and create new one.
+       - Is the old symbolic link the target the same as what was asked now.
+         - No, delete and create new.
+         - Yes, skip creation.
