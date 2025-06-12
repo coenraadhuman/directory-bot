@@ -1,5 +1,4 @@
 FUTURE:
-- Move any non-symlinked files that exist on the target directory to the primary directory.
 - Remove any files that were deleted on the source directory from the target directory.
 - Remove any files that were deleted on the target directory from the source directory.
 - Rename symlink name via external tool for target directory from source directory.
