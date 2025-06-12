@@ -20,7 +20,7 @@ public class Main {
         var properties = ConfigurationLoader.retrieveApplicationProperties();
 
         var database = new Database(properties
-                .getProperty(DATABASE_CONNECTION)
+                .getProperty(DIRECTORY_BOT_DATABASE_CONNECTION)
                 .orElseThrow(() -> new RuntimeException("Require database directory to be provided, either via environment variables or properties file"))
         );
 
@@ -28,8 +28,8 @@ public class Main {
         var jdbi = database.connection();
 
         // Todo: exceptions
-        final var sourceDirectory = properties.getProperty(SOURCE_DIRECTORY).map(Paths::get).orElseThrow();
-        final var targetDirectory = properties.getProperty(TARGET_DIRECTORY).map(Paths::get).orElseThrow();
+        final var sourceDirectory = properties.getProperty(DIRECTORY_BOT_SOURCE_DIRECTORY).map(Paths::get).orElseThrow();
+        final var targetDirectory = properties.getProperty(DIRECTORY_BOT_TARGET_DIRECTORY).map(Paths::get).orElseThrow();
 
         try (var sourcePaths = Files.walk(sourceDirectory)) {
             sourcePaths
