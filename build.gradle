@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+    id 'org.flywaydb.flyway' version '11.8.2'
+}
+
+group = "io.github.coenraadhuman"
+version = "1.0-SNAPSHOT"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Database
+    implementation 'org.jdbi:jdbi3-core:3.49.4'
+    implementation 'org.xerial:sqlite-jdbc:3.49.1.0'
+    implementation 'org.flywaydb:flyway-core:11.8.2'
+
+    // Logging
+    implementation 'org.tinylog:slf4j-tinylog:2.6.2'
+    implementation 'org.tinylog:tinylog-impl:2.6.2'
+
+    testImplementation(platform('org.junit:junit-bom:5.10.0'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
