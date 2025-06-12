@@ -1,5 +1,8 @@
 package io.github.coenraadhuman.directory.bot;
 
+import io.github.coenraadhuman.directory.bot.configuration.ConfigurationLoader;
+import io.github.coenraadhuman.directory.bot.file.manager.SymlinkCreation;
+import io.github.coenraadhuman.directory.bot.persistence.Database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -7,63 +10,31 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static io.github.coenraadhuman.directory.bot.ApplicationProperties.SOURCE_DIRECTORY;
-import static io.github.coenraadhuman.directory.bot.ApplicationProperties.TARGET_DIRECTORY;
+import static io.github.coenraadhuman.directory.bot.configuration.Property.*;
 
 public class Main {
 
     private static final Logger log = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args)  {
-        var properties = ApplicationProperties.retrieveApplicationProperties();
+        var properties = ConfigurationLoader.retrieveApplicationProperties();
 
-        Database.migrate(properties);
-        var jdbi = Database.retrieveDatabaseConnection(properties);
+        var database = new Database(properties
+                .getProperty(DATABASE_CONNECTION)
+                .orElseThrow(() -> new RuntimeException("Require database directory to be provided, either via environment variables or properties file"))
+        );
 
-        var sourceRootDirectory = Paths.get(properties.getProperty(SOURCE_DIRECTORY));
-        var targetRootDirectory = Paths.get(properties.getProperty(TARGET_DIRECTORY));
+        database.migrate();
+        var jdbi = database.connection();
 
-        try (var sourcePaths = Files.walk(sourceRootDirectory)) {
+        // Todo: exceptions
+        final var sourceDirectory = properties.getProperty(SOURCE_DIRECTORY).map(Paths::get).orElseThrow();
+        final var targetDirectory = properties.getProperty(TARGET_DIRECTORY).map(Paths::get).orElseThrow();
+
+        try (var sourcePaths = Files.walk(sourceDirectory)) {
             sourcePaths
                 .filter(path -> !path.toFile().isDirectory())
-                .forEach(sourcePath -> {
-                    log.info("Found source path: {}", sourcePath);
-                    log.info("Parent path: {}", sourcePath.getParent());
-                    log.info("File name: {}", sourcePath.getFileName());
-                    var targetDeterminedDirectory = Paths.get(sourcePath.getParent().toString().replace(sourceRootDirectory.toString(), targetRootDirectory.toString()));
-                    var targetPath = Paths.get(targetDeterminedDirectory.toString(), sourcePath.getFileName().toString());
-                    log.info("Determined target: {}", targetPath);
-                    try {
-                        if (!Files.exists(targetDeterminedDirectory)) {
-                           Files.createDirectories(targetDeterminedDirectory);
-                        }
-                        if (Files.isSymbolicLink(targetPath)) {
-                            if (!Files.exists(targetPath)) {
-                                log.warn("Found symbolic link with missing target");
-                                Files.delete(targetPath);
-                                Files.createSymbolicLink(targetPath, sourcePath);
-                                log.info("Updated symbolic link: {} with source: {}", targetPath, sourcePath);
-                            } else {
-                                var existingSymbolicLinkSourceFile = Files.readSymbolicLink(targetPath);
-                                var existingSymbolicLinkSourcePath = Paths.get(existingSymbolicLinkSourceFile.getParent().toString(), existingSymbolicLinkSourceFile.getFileName().toString());
-                                log.info("Symbolic link already exists for target: {}", targetPath);
-                                if (sourcePath.equals(existingSymbolicLinkSourcePath)) {
-                                    log.info("Skipping creating symbolic link target: {} already exists for source: {}", targetPath, sourcePath);
-                                } else {
-                                    Files.delete(targetPath);
-                                    Files.createSymbolicLink(targetPath, sourcePath);
-                                    log.info("Updated symbolic link: {} with source: {}", targetPath, sourcePath);
-                                }
-                            }
-                        } else {
-                            Files.createSymbolicLink(targetPath, sourcePath);
-                            log.info("Created symbolic link: {} for source: {}", targetPath, sourcePath);
-                        }
-                    } catch (IOException e) {
-                        log.error("Could not create symbolic link for {} because {}", targetPath, e.getMessage());
-                    }
-                }
-            );
+                .forEach(sourceFile -> new SymlinkCreation(sourceDirectory, targetDirectory, sourceFile).create());
         } catch (IOException e) {
             // Do nothing for now
         }
