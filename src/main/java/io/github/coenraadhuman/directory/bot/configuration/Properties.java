@@ -1,10 +1,13 @@
 package io.github.coenraadhuman.directory.bot.configuration;
 
-import java.io.IOException;
-import java.io.InputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Optional;
 
 public class Properties extends java.util.Properties {
+
+    private static final Logger log = LoggerFactory.getLogger(Properties.class);
 
     public Optional<String> getProperty(Property key) {
         return Optional.ofNullable(super.getProperty(key.toString()));
@@ -18,16 +21,18 @@ public class Properties extends java.util.Properties {
         return super.putIfAbsent(key.toString(), value);
     }
 
-    /**
-     * In addition to loading properties file and its contents, it will load environment variable's value for corresponding property if provided.
-     */
-    @Override
-    public synchronized void load(InputStream inStream) throws IOException {
-        super.load(inStream);
-
+    public synchronized void loadEnvironmentVariables() {
         for (var property : Property.values()) {
-            Optional.ofNullable(System.getenv(property.name()))
-                    .ifPresent(propertyValueAsEnv -> this.putIfAbsent(property, propertyValueAsEnv));
+            EnvironmentVariables.getVariable(property)
+                    .ifPresentOrElse(
+                  propertyValueAsEnv -> {
+                      log.info("Property: {} using environment value: {}", property, propertyValueAsEnv);
+                      this.putIfAbsent(property, propertyValueAsEnv);
+                    }, () ->
+                      property.defaultValue().ifPresent(defaultValue -> {
+                          log.info("Property: {} using default value: {}", property, defaultValue);
+                          this.putIfAbsent(property, defaultValue);
+                    }));
         }
     }
 

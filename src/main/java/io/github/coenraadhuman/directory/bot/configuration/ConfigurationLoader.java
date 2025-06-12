@@ -8,9 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Optional;
 
-import static io.github.coenraadhuman.directory.bot.configuration.Property.*;
+import static io.github.coenraadhuman.directory.bot.configuration.Property.DIRECTORY_BOT_CONFIGURATION_DIRECTORY;
+import static io.github.coenraadhuman.directory.bot.configuration.Property.DIRECTORY_BOT_DATABASE_CONNECTION;
 
 public class ConfigurationLoader {
 
@@ -23,26 +23,15 @@ public class ConfigurationLoader {
     public static Properties retrieveApplicationProperties() {
         var properties = new Properties();
 
-        putRequired(properties);
-        putDefaults(properties);
+        properties.loadEnvironmentVariables();
+        putComputed(properties);
         readFileProperties(properties);
 
         return properties;
     }
 
-    private static void putRequired(Properties properties) {
-        Optional.ofNullable(System.getenv(DIRECTORY_BOT_CONFIGURATION_DIRECTORY.name()))
-                .ifPresentOrElse(configurationDirectory -> {
-                    log.info("Configuration directory detected: {} ", configurationDirectory);
-                    properties.put(DIRECTORY_BOT_CONFIGURATION_DIRECTORY, configurationDirectory);
-                }, () -> {
-                    log.warn("Configuration not provided defaulting to: /config");
-                    properties.put(DIRECTORY_BOT_CONFIGURATION_DIRECTORY, "/config");
-                });
-    }
-
-    private static void putDefaults(Properties properties) {
-        Optional.ofNullable(System.getenv(DIRECTORY_BOT_CONFIGURATION_DIRECTORY.name()))
+    private static void putComputed(Properties properties) {
+        properties.getProperty(DIRECTORY_BOT_CONFIGURATION_DIRECTORY)
                 .ifPresentOrElse(configurationDirectory -> {
                     final var determinedDatabaseConnection = "jdbc:sqlite:%s/directory-bot.db".formatted(configurationDirectory);
                     properties.put(DIRECTORY_BOT_DATABASE_CONNECTION, determinedDatabaseConnection);

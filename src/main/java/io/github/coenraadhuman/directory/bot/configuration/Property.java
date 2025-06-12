@@ -1,21 +1,30 @@
 package io.github.coenraadhuman.directory.bot.configuration;
 
+import java.util.Optional;
+
 public enum Property {
 
-    DIRECTORY_BOT_CONFIGURATION_DIRECTORY("configuration.directory"),
-    DIRECTORY_BOT_DATABASE_CONNECTION("database.connection"), // Used internally
-    DIRECTORY_BOT_SOURCE_DIRECTORY("source.directory"),
-    DIRECTORY_BOT_TARGET_DIRECTORY("target.directory");
+    DIRECTORY_BOT_CONFIGURATION_DIRECTORY("configuration.directory", "/config"),
+    DIRECTORY_BOT_DATABASE_CONNECTION("database.connection", null), // Used internally
+    DIRECTORY_BOT_SINGLE_EXECUTION("single.execution", "false"),
+    DIRECTORY_BOT_SOURCE_DIRECTORY("source.directory", null),
+    DIRECTORY_BOT_TARGET_DIRECTORY("target.directory", null);
 
     private final String propertyValue;
+    private final String defaultValue;
 
-    Property(String propertyValue) {
+    Property(String propertyValue, String defaultValue) {
         this.propertyValue = propertyValue;
+        this.defaultValue = defaultValue;
     }
 
     @Override
     public String toString() {
         return propertyValue;
+    }
+
+    public Optional<String> defaultValue() {
+        return Optional.ofNullable(defaultValue);
     }
 
 }
