@@ -3,6 +3,7 @@ package io.github.coenraadhuman.directory.bot;
 import io.github.coenraadhuman.directory.bot.configuration.ConfigurationLoader;
 import io.github.coenraadhuman.directory.bot.execution.manager.ExecutionManager;
 import io.github.coenraadhuman.directory.bot.file.manager.ExistingTargetFileCorrector;
+import io.github.coenraadhuman.directory.bot.file.manager.SymlinkCleaner;
 import io.github.coenraadhuman.directory.bot.file.manager.SymlinkCreation;
 import io.github.coenraadhuman.directory.bot.persistence.Database;
 import org.slf4j.Logger;
@@ -50,6 +51,15 @@ public class Application {
                         .filter(path -> !path.toFile().isDirectory())
                         // Will just move and with next run symlink will be created
                         .forEach(targetFile -> new ExistingTargetFileCorrector(sourceDirectory, targetDirectory, targetFile).move());
+            } catch (IOException e) {
+                // Do nothing for now
+            }
+
+            try (var targetPaths = Files.walk(targetDirectory)) {
+                targetPaths
+                        .filter(path -> !path.toFile().isDirectory())
+                        // Will just move and with next run symlink will be created
+                        .forEach(targetFile -> new SymlinkCleaner(targetFile).clean());
             } catch (IOException e) {
                 // Do nothing for now
             }

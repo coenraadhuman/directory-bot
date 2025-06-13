@@ -1,10 +1,12 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
     id 'org.flywaydb.flyway' version '11.8.2'
 }
 
-group = "io.github.coenraadhuman"
-version = "1.0-SNAPSHOT"
+group = 'io.github.coenraadhuman'
+version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -23,6 +25,21 @@ dependencies {
     testImplementation(platform('org.junit:junit-bom:5.10.0'))
     testImplementation('org.junit.jupiter:junit-jupiter')
 }
+
+application {
+    mainClass = 'io.github.coenraadhuman.directory.bot.Application'
+}
+
+shadowJar {
+    archiveBaseName.set('directory-bot')
+    archiveClassifier.set('')
+    archiveVersion.set('1.0')
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
 
 tasks.test {
     useJUnitPlatform()

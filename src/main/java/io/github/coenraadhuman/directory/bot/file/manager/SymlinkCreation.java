@@ -39,7 +39,7 @@ public class SymlinkCreation {
                 log.info("Symlink: {} already exists", symlinkAbsolutePath);
 
                 if (!Files.exists(symlinkAbsolutePath)) {
-                    log.warn("Symlink: {} with missing target, removing it", symlinkAbsolutePath);
+                    log.warn("Invalid symlink: {} found, removing it", symlinkAbsolutePath);
                     Files.delete(symlinkAbsolutePath);
                 } else {
                     var existingSymlinkTarget = Files.readSymbolicLink(symlinkAbsolutePath);
@@ -50,6 +50,7 @@ public class SymlinkCreation {
                         return;
                     }
 
+                    // Todo: configuration for how to handle multiple sources with same file name and directory?
                     log.warn("Symlink: {} with incorrect target, removing it", symlinkAbsolutePath);
                     Files.delete(symlinkAbsolutePath);
                 }
