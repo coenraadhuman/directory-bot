@@ -1,9 +1,8 @@
 name: Build and Create Draft Release
 
 on:
-  push:
-    tags:
-      -  '[0-9]+.[0-9]+.[0-9]+*'
+  repository_dispatch:
+    types: [trigger-release]
 
 env:
   GITHUB_TOKEN: ${{ github.token }}
@@ -13,8 +12,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout tag
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.client_payload.tag }}
 
       - name: Generate New Release Ghangelog
         uses: addnab/docker-run-action@v3

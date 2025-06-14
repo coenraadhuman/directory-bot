@@ -17,6 +17,18 @@
       <td colspan="7"><em><strong>Unreleased</strong></em>
     </tr>
     <tr>
+      <td>0.8.0</td>
+      <td>Feature</td>
+      <td>Auto release.</td>
+      <td> </td>
+      <td> </td>
+      <td><a href="mailto:coenraad.human@proton.me">Coenraad Human</a></td>
+      <td><a href="mailto:coenraad.human@proton.me">Coenraad Human</a></td>
+    </tr>
+    <tr>
+      <td colspan="7"><em><strong>Release: 0.7.0</strong></em></td>
+    </tr>
+    <tr>
       <td>0.7.0</td>
       <td>Feature</td>
       <td>Handle file clashes from different sources.</td>
