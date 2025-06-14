@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'application'
-    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.gradleup.shadow' version '8.3.6'
     id 'org.flywaydb.flyway' version '11.8.2'
 }
 
@@ -30,16 +30,37 @@ application {
     mainClass = 'io.github.coenraadhuman.directory.bot.Application'
 }
 
+distZip {
+    dependsOn shadowJar
+    into('lib') {
+        from(shadowJar.archiveFile)
+    }
+}
+
+distTar {
+    dependsOn shadowJar
+    into('lib') {
+        from(shadowJar.archiveFile)
+    }
+}
+
+startScripts {
+    dependsOn shadowJar
+}
+
 shadowJar {
     archiveBaseName.set('directory-bot')
     archiveClassifier.set('')
     archiveVersion.set(version)
 }
 
+tasks.named('jar') {
+    enabled = false
+}
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
-
 
 tasks.test {
     useJUnitPlatform()

@@ -5,7 +5,7 @@ ARG APP_GID=1000
 
 WORKDIR /build
 COPY . .
-RUN ./gradlew shadowJar
+RUN ./gradlew clean build
 
 FROM gcr.io/distroless/java21-debian12
 

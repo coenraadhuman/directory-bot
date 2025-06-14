@@ -40,7 +40,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew clean shadowJar
+        run: ./gradlew clean build
 
       - name: Publish release artifacts
         uses: actions/upload-artifact@v3
