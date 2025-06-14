@@ -62,7 +62,7 @@ jobs:
             echo "======================"
             echo "Export version for tag"
             echo "======================"
-            echo "::set-env name=VERSION::$calculated_version"
+            echo "VERSION=$calculated_version" >> $GITHUB_ENV
 
       - name: Commit Changes
         run: |
