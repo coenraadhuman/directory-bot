@@ -17,6 +17,18 @@
       <td colspan="7"><em><strong>Unreleased</strong></em>
     </tr>
     <tr>
+      <td>0.9.4</td>
+      <td>Fix</td>
+      <td>Release draft.</td>
+      <td> </td>
+      <td> </td>
+      <td><a href="mailto:coenraad.human@proton.me">Coenraad Human</a></td>
+      <td><a href="mailto:coenraad.human@proton.me">Coenraad Human</a></td>
+    </tr>
+    <tr>
+      <td colspan="7"><em><strong>Release: 0.9.3</strong></em></td>
+    </tr>
+    <tr>
       <td>0.9.3</td>
       <td>Fix</td>
       <td>Release draft.</td>

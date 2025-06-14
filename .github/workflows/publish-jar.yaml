@@ -48,9 +48,11 @@ jobs:
           name: directory-bot-${{ github.event.client_payload.tag }}
           path: "./build/libs/directory-bot-*.jar"
 
-      - name: Publish GitHub release
+      - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           draft: true
           files: "./build/libs/directory-bot-*.jar"
           body_path: RELEASE_CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_DRAFT }}
