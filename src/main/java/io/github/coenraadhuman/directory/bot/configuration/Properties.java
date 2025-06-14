@@ -13,6 +13,10 @@ public class Properties extends java.util.Properties {
         return Optional.ofNullable(super.getProperty(key.toString()));
     }
 
+    public boolean getFlagProperty(Property key) {
+        return Boolean.parseBoolean(super.getProperty(key.toString()));
+    }
+
     public synchronized Object put(Property key, Object value) {
         return super.put(key.toString(), value);
     }

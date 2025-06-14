@@ -6,8 +6,3 @@ FUTURE:
 
 thinking track diffs
 -> start with empty target, makes most sense and database tracks of everything
-
-MacOS:
-```bash
-docker run --user "$(id -u):$(id -g)" -e APP_UID="$(id -u)" -e APP_GID="$(id -g)" -v /Users/coenraadhuman/Development/personal/directory-bot-test:/working-directory -v /Users/coenraadhuman/Development/personal/directory-bot-config:/config directory-bot:0.0.1
-```

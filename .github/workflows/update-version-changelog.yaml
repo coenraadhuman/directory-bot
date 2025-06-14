@@ -85,8 +85,12 @@ jobs:
         env:
           TAG_TOKEN: ${{ secrets.TAG_TOKEN }}
         run: |
-          git tag "$VERSION"
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git remote set-url origin https://x-access-token:${TAG_TOKEN}@github.com/${{ github.repository }}
-          git push origin "$VERSION"
+          if git rev-parse "$VERSION" >/dev/null 2>&1; then
+            echo "Tag exists, skipping creation of it"
+          else
+            git tag "$VERSION"
+            git config user.name "GitHub Actions"
+            git config user.email "actions@github.com"
+            git remote set-url origin https://x-access-token:${TAG_TOKEN}@github.com/${{ github.repository }}
+            git push origin "$VERSION"
+          fi

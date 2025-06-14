@@ -17,6 +17,15 @@
       <td colspan="7"><em><strong>Unreleased</strong></em>
     </tr>
     <tr>
+      <td>0.7.0</td>
+      <td>Feature</td>
+      <td>Handle file clashes from different sources.</td>
+      <td> </td>
+      <td> </td>
+      <td><a href="mailto:coenraad.human@proton.me">Coenraad Human</a></td>
+      <td><a href="mailto:coenraad.human@proton.me">Coenraad Human</a></td>
+    </tr>
+    <tr>
       <td>0.6.4</td>
       <td>CI</td>
       <td>Fix jar workflow.</td>

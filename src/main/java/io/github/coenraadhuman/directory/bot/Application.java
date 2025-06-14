@@ -40,7 +40,7 @@ public class Application {
             try (var sourcePaths = Files.walk(sourceDirectory)) {
                 sourcePaths
                         .filter(path -> !path.toFile().isDirectory())
-                        .forEach(sourceFile -> new SymlinkCreation(sourceDirectory, targetDirectory, sourceFile).create());
+                        .forEach(sourceFile -> new SymlinkCreation(properties, sourceDirectory, targetDirectory, sourceFile).create());
             } catch (IOException e) {
                 // Do nothing for now
             }

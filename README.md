@@ -8,3 +8,9 @@ Dockerized application meant to provide the following functionality between a so
 
 ## Docker
 
+Example of running the application:
+
+MacOS:
+```bash
+docker run --user "$(id -u):$(id -g)" -e APP_UID="$(id -u)" -e APP_GID="$(id -g)" -v /your/machine/root/directory:/working-directory -v /your/machine/config/directory/for/application:/config directory-bot:0.6.4
+```
