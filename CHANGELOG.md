@@ -19,6 +19,18 @@
     <tr>
       <td>0.6.4</td>
       <td>CI</td>
+      <td>Fix jar workflow.</td>
+      <td> </td>
+      <td> </td>
+      <td><a href="mailto:coenraad.human@proton.me">Coenraad Human</a></td>
+      <td><a href="mailto:coenraad.human@proton.me">Coenraad Human</a></td>
+    </tr>
+    <tr>
+      <td colspan="7"><em><strong>Release: 0.6.4</strong></em></td>
+    </tr>
+    <tr>
+      <td>0.6.4</td>
+      <td>CI</td>
       <td>Auto trigger docker and publish workflows.</td>
       <td> </td>
       <td> </td>
