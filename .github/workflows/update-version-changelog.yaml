@@ -91,8 +91,10 @@ jobs:
           fi
 
       - name: Trigger Repository Dispatch
+        env:
+          TRIGGER_RELEASE: ${{ secrets.TRIGGER_RELEASE }}
         run: |
           curl -X POST https://api.github.com/repos/owner/repo/dispatches \
-            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Authorization: token $TRIGGER_RELEASE" \
             -H "Accept: application/vnd.github.v3+json" \
             -d '{"event_type":"trigger-release","client_payload":{"tag":"$VERSION"}}'
