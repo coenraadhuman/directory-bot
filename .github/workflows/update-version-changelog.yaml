@@ -30,7 +30,6 @@ jobs:
         run: ./gradlew build
 
       - name: Calculate Version
-        id: calculate_version
         uses: addnab/docker-run-action@v3
         with:
           image: ghcr.io/coenraadhuman/gib:latest
@@ -63,7 +62,7 @@ jobs:
             echo "======================"
             echo "Export version for tag"
             echo "======================"
-            echo "version=$calculated_version" >> $GITHUB_OUTPUT
+            echo "::set-env name=VERSION::$calculated_version"
 
       - name: Commit Changes
         run: |
@@ -76,5 +75,5 @@ jobs:
 
       - name: Create Git Tag
         run: |
-          git tag v${{ steps.calculate_version.outputs.version }}
-          git push origin v${{ steps.calculate_version.outputs.version }}
+          git tag v${{ VERSION }}
+          git push origin v${{ VERSION }}
