@@ -1,0 +1,56 @@
+name: Build and Create Draft Release
+
+on:
+  push:
+    tags:
+      -  '[0-9]+.[0-9]+.[0-9]+*'
+
+env:
+  GITHUB_TOKEN: ${{ github.token }}
+
+jobs:
+  build:
+    name: ${{ matrix.platform.os_name }} with Rust ${{ matrix.toolchain }} on target ${{ matrix.platform.target }}
+    runs-on: ${{ matrix.platform.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Generate New Release Ghangelog
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ghcr.io/coenraadhuman/gib:latest
+          shell: /bin/bash
+          options: -v ${{ github.workspace }}:/app
+          run : |
+            echo "=================="
+            echo "Generate Changelog"
+            echo "=================="
+            gib changelog -p /app > RELEASE_CHANGELOG.md
+            echo "Updated CHANGELOG.md"
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew clean shadowJar
+
+      - name: Publish release artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: gib-${{ matrix.platform.os_name }}
+          path: "./build/libs/directory-bot-*.jar"
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          draft: true
+          files: "./build/libs/directory-bot-*.jar"
+          body_path: RELEASE_CHANGELOG.md

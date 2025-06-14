@@ -1,0 +1,67 @@
+name: Update Version and Changelog
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  update_version_changelog:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Calculate Version
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ghcr.io/coenraadhuman/gib:latest
+          shell: /bin/bash
+          options: -v ${{ github.workspace }}:/app
+          run : |
+            echo "====================="
+            echo "Files mounted on /app"
+            echo "====================="
+            ls -la /app
+
+            echo "========================="
+            echo "Calculate Project Version"
+            echo "========================="
+            calculated_version=$(gib version -p /app)
+            echo "Calculated version: $calculated_version"
+
+            echo "==============================="
+            echo "Replace version in build.gradle"
+            echo "==============================="
+            sed -i '0, /version/s/version.*/version = "'$(echo $calculated_version)'"/' /app/build.gradle
+            echo "Updated build.gradle with new version value."
+
+            echo "=================="
+            echo "Generate Changelog"
+            echo "=================="
+            gib changelog -p /app > CHANGELOG.md
+            echo "Updated CHANGELOG.md"
+
+      - name: Commit Changes
+        run: |
+          git config --global user.name "$(git log -1 --pretty=%an)"
+          git config --global user.email "$(git log -1 --pretty=%ae)"
+          git add ./build.gradle
+          git add ./CHANGELOG.md
+          git commit --amend --no-edit
+          git push -f
