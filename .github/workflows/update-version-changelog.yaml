@@ -75,5 +75,5 @@ jobs:
 
       - name: Create Git Tag
         run: |
-          git tag v${{ VERSION }}
-          git push origin v${{ VERSION }}
+          git tag "v$VERSION"
+          git push origin "v$VERSION"
