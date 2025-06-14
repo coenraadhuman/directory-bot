@@ -62,14 +62,15 @@ jobs:
             echo "======================"
             echo "Export version for tag"
             echo "======================"
-            echo "VERSION=$calculated_version" > /app/version.txt
+            echo "$calculated_version" > version.txt
+            echo "Written to file: $(echo version.txt)"
 
       - name: Read version from file
         run: |
           version=$(cat version.txt)
           echo "Version read from file: $version"
-          echo "VERSION=$calculated_version" >> $GITHUB_ENV
-          rm /app/version.txt
+          echo "VERSION=$version" >> $GITHUB_ENV
+          rm version.txt
 
       - name: Commit Changes
         run: |
