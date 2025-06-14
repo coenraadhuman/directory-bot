@@ -43,9 +43,9 @@ jobs:
         run: ./gradlew clean build
 
       - name: Publish release artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: gib-${{ matrix.platform.os_name }}
+          name: directory-bot-${{ github.event.client_payload.tag }}
           path: "./build/libs/directory-bot-*.jar"
 
       - name: Publish GitHub release
