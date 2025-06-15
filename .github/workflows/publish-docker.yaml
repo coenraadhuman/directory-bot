@@ -59,7 +59,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./src/docker/Dockerfile
+          file: ./src/docker/filebot.Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
