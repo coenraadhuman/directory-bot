@@ -13,8 +13,7 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Optional;
 
-import static io.github.coenraadhuman.directory.bot.configuration.Property.DIRECTORY_BOT_RENAME_COMMAND;
-import static io.github.coenraadhuman.directory.bot.configuration.Property.DIRECTORY_BOT_SYMLINK_CREATION_AVOID_VALID_OVERWRITE;
+import static io.github.coenraadhuman.directory.bot.configuration.Property.*;
 
 public class SymlinkCreation {
 
@@ -34,9 +33,16 @@ public class SymlinkCreation {
     
     public void create() {
 
-        final var symlinkAbsolutePath = properties.getProperty(DIRECTORY_BOT_RENAME_COMMAND)
+        final var renameAbsolutePath = properties.getProperty(DIRECTORY_BOT_RENAME_COMMAND)
                 .flatMap(command -> ExternalRenameInvoker.invoke(sourceFile.getFileName().toString(), sourceDirectory.toString(), targetDirectory.toString(), command))
-                .map(Paths::get)
+                .map(Paths::get);
+
+        if (properties.getFlagProperty(DIRECTORY_BOT_SKIP_RENAME_FAILED_FILES) && properties.getProperty(DIRECTORY_BOT_RENAME_COMMAND).isPresent() && renameAbsolutePath.isEmpty()) {
+            log.error("Could not rename: {}", sourceFile);
+            return;
+        }
+
+        final var symlinkAbsolutePath = renameAbsolutePath
                 .orElse(Paths.get(sourceFile.getParent().toString().replace(sourceDirectory.toString(), targetDirectory.toString()), sourceFile.getFileName().toString()));
 
         final var symlinkRootDirectory = symlinkAbsolutePath.getParent();
