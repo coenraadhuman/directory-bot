@@ -17,6 +17,18 @@
       <td colspan="7"><em><strong>Unreleased</strong></em>
     </tr>
     <tr>
+      <td>0.11.1</td>
+      <td>Fix</td>
+      <td>Missing filebot package from filebot container.</td>
+      <td> </td>
+      <td> </td>
+      <td><a href="mailto:coenraad.human@proton.me">Coenraad Human</a></td>
+      <td><a href="mailto:coenraad.human@proton.me">Coenraad Human</a></td>
+    </tr>
+    <tr>
+      <td colspan="7"><em><strong>Release: 0.11.0</strong></em></td>
+    </tr>
+    <tr>
       <td>0.11.0</td>
       <td>Feature</td>
       <td>Skip file option if rename failed.</td>
