@@ -34,7 +34,7 @@ public class SymlinkCreation {
     public void create() {
 
         final var renameAbsolutePath = properties.getProperty(DIRECTORY_BOT_RENAME_COMMAND)
-                .flatMap(command -> ExternalRenameInvoker.invoke(sourceFile.getFileName().toString(), sourceDirectory.toString(), targetDirectory.toString(), command))
+                .flatMap(command -> ExternalRenameInvoker.invoke(sourceFile.toString(), sourceFile.getFileName().toString(), sourceDirectory.toString(), targetDirectory.toString(), command))
                 .map(Paths::get);
 
         if (properties.getFlagProperty(DIRECTORY_BOT_SKIP_RENAME_FAILED_FILES) && properties.getProperty(DIRECTORY_BOT_RENAME_COMMAND).isPresent() && renameAbsolutePath.isEmpty()) {

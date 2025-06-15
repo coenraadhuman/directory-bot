@@ -19,7 +19,7 @@ public class ExternalRenameInvoker {
     private ExternalRenameInvoker() {
     }
 
-    public static Optional<String> invoke(String filePath, String sourceDirectory, String targetDirectory, String processArgs) {
+    public static Optional<String> invoke(String fileAbsolutePath, String fileName, String sourceDirectory, String targetDirectory, String processArgs) {
         try {
             if (processArgs.isBlank()) {
                 log.error("No rename bash script provided.");
@@ -32,7 +32,8 @@ public class ExternalRenameInvoker {
             }
 
             var processArgsWithArguments = Arrays.stream(processArgs.split(" ")).collect(Collectors.toCollection(ArrayList::new));
-            processArgsWithArguments.add(filePath);
+            processArgsWithArguments.add(fileAbsolutePath);
+            processArgsWithArguments.add(fileName);
             processArgsWithArguments.add(sourceDirectory);
             processArgsWithArguments.add(targetDirectory);
 
