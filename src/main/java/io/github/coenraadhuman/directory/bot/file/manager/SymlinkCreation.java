@@ -67,7 +67,7 @@ public class SymlinkCreation {
                         return;
                     } else {
                         if (properties.getFlagProperty(DIRECTORY_BOT_SYMLINK_CREATION_AVOID_VALID_OVERWRITE)) {
-                            var newFilePath = Checksum.getMD5(Instant.now().toString())
+                            var newFilePath = Checksum.getMD5(sourceFile.toString())
                                     .map(checksum -> {
                                         var filename = symlinkAbsolutePath.getFileName().toString();
                                         int dotIndex = filename.lastIndexOf('.');
