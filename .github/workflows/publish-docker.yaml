@@ -41,6 +41,8 @@ jobs:
           echo "TAG_NAME=${TAG#refs/tags/}" >> $GITHUB_ENV
           echo "DOCKER_TAGS=coenraadhuman/directory-bot:latest,coenraadhuman/directory-bot:${TAG#refs/tags/}" >> $GITHUB_ENV
           echo "GHCR_TAGS=ghcr.io/${{ github.repository }}:latest,ghcr.io/${{ github.repository }}:${TAG#refs/tags/}" >> $GITHUB_ENV
+          echo "FILEBOT_DOCKER_TAGS=coenraadhuman/directory-bot:filebot-latest,coenraadhuman/directory-bot:filebot-${TAG#refs/tags/}" >> $GITHUB_ENV
+          echo "FILEBOT_GHCR_TAGS=ghcr.io/${{ github.repository }}:filebot-latest,ghcr.io/${{ github.repository }}:filebot-${TAG#refs/tags/}" >> $GITHUB_ENV
 
       - name: Build and push Docker images
         uses: docker/build-push-action@v5
@@ -52,14 +54,6 @@ jobs:
           tags: |
             ${{ env.DOCKER_TAGS }}
             ${{ env.GHCR_TAGS }}
-
-      - name: Set Filebot Docker image tags
-        id: vars
-        run: |
-          TAG=${{ github.event.client_payload.tag }}
-          echo "TAG_NAME=${TAG#refs/tags/}" >> $GITHUB_ENV
-          echo "FILEBOT_DOCKER_TAGS=coenraadhuman/directory-bot:filebot-latest,coenraadhuman/directory-bot:filebot-${TAG#refs/tags/}" >> $GITHUB_ENV
-          echo "FILEBOT_GHCR_TAGS=ghcr.io/${{ github.repository }}:filebot-latest,ghcr.io/${{ github.repository }}:filebot-${TAG#refs/tags/}" >> $GITHUB_ENV
 
       - name: Build and push Filebot Docker images
         uses: docker/build-push-action@v5
