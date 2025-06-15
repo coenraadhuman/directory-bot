@@ -1,4 +1,4 @@
-package io.github.coenraadhuman.directory.bot.execution.manager;
+package io.github.coenraadhuman.directory.bot.execution;
 
 import io.github.coenraadhuman.directory.bot.configuration.Properties;
 import org.slf4j.Logger;

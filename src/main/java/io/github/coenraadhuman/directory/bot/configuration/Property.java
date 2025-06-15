@@ -8,6 +8,7 @@ public enum Property {
     DIRECTORY_BOT_DATABASE_CONNECTION("database.connection", null), // Used internally
     DIRECTORY_BOT_SINGLE_EXECUTION("single.execution", "false"),
     DIRECTORY_BOT_SYMLINK_CREATION_AVOID_VALID_OVERWRITE("symlink.creation.avoid.valid.overwrite", "true"),
+    DIRECTORY_BOT_RENAME_COMMAND("rename.command", null),
     DIRECTORY_BOT_SOURCE_DIRECTORY("source.directory", null),
     DIRECTORY_BOT_TARGET_DIRECTORY("target.directory", null);
 

@@ -1,7 +1,7 @@
 package io.github.coenraadhuman.directory.bot;
 
 import io.github.coenraadhuman.directory.bot.configuration.ConfigurationLoader;
-import io.github.coenraadhuman.directory.bot.execution.manager.ExecutionManager;
+import io.github.coenraadhuman.directory.bot.execution.ExecutionManager;
 import io.github.coenraadhuman.directory.bot.file.manager.ExistingTargetFileCorrector;
 import io.github.coenraadhuman.directory.bot.file.manager.SymlinkCleaner;
 import io.github.coenraadhuman.directory.bot.file.manager.SymlinkCreation;

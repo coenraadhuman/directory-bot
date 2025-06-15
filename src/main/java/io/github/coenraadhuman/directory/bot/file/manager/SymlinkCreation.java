@@ -1,7 +1,7 @@
 package io.github.coenraadhuman.directory.bot.file.manager;
 
 import io.github.coenraadhuman.directory.bot.configuration.Properties;
-import io.github.coenraadhuman.directory.bot.configuration.Property;
+import io.github.coenraadhuman.directory.bot.execution.ExternalRenameInvoker;
 import io.github.coenraadhuman.directory.bot.utility.Checksum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +13,7 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Optional;
 
+import static io.github.coenraadhuman.directory.bot.configuration.Property.DIRECTORY_BOT_RENAME_COMMAND;
 import static io.github.coenraadhuman.directory.bot.configuration.Property.DIRECTORY_BOT_SYMLINK_CREATION_AVOID_VALID_OVERWRITE;
 
 public class SymlinkCreation {
@@ -32,9 +33,14 @@ public class SymlinkCreation {
     }
     
     public void create() {
-        final var symlinkRootDirectory = Paths.get(sourceFile.getParent().toString().replace(sourceDirectory.toString(), targetDirectory.toString()));
-        // Todo: this second argument might undergo a rename if user stipulates it:
-        final var symlinkAbsolutePath = Paths.get(symlinkRootDirectory.toString(), sourceFile.getFileName().toString());
+
+        final var symlinkAbsolutePath = properties.getProperty(DIRECTORY_BOT_RENAME_COMMAND)
+                .flatMap(command -> ExternalRenameInvoker.invoke(sourceFile.getFileName().toString(), sourceDirectory.toString(), targetDirectory.toString(), command))
+                .map(Paths::get)
+                .orElse(Paths.get(sourceFile.getParent().toString().replace(sourceDirectory.toString(), targetDirectory.toString()), sourceFile.getFileName().toString()));
+
+        final var symlinkRootDirectory = symlinkAbsolutePath.getParent();
+
         Optional<Path> clashSymlinkAbsolutePath = Optional.empty();
         
         log.info("Processing source file: {} with determined symlink: {}", sourceFile, symlinkAbsolutePath);
