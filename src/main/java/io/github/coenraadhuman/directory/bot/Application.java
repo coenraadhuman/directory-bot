@@ -5,6 +5,7 @@ import io.github.coenraadhuman.directory.bot.execution.ExecutionManager;
 import io.github.coenraadhuman.directory.bot.file.manager.ExistingTargetFileCorrector;
 import io.github.coenraadhuman.directory.bot.file.manager.SymlinkCleaner;
 import io.github.coenraadhuman.directory.bot.file.manager.SymlinkCreation;
+import io.github.coenraadhuman.directory.bot.filebot.FilebotActivate;
 import io.github.coenraadhuman.directory.bot.persistence.Database;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,10 @@ public class Application {
 
     public static void main(String[] args)  {
         var properties = ConfigurationLoader.retrieveApplicationProperties();
+
+        if (properties.getFlagProperty(DIRECTORY_BOT_FILEBOT_RENAME_ENABLE)) {
+            FilebotActivate.activate(properties);
+        }
 
         var database = new Database(properties
                 .getProperty(DIRECTORY_BOT_DATABASE_CONNECTION)

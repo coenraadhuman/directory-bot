@@ -20,7 +20,7 @@ WORKDIR /app
 COPY --from=builder /build/build/libs/directory-bot-*.jar directory-bot.jar
 
 WORKDIR /
-COPY --from=builder /build/src/docker/filebot-entrypoint.sh entrypoint.sh
+COPY --from=builder /build/src/docker/entrypoint.sh entrypoint.sh
 RUN chmod +x entrypoint.sh
 
 ENTRYPOINT ["./entrypoint.sh", "java", "-jar", "/app/directory-bot.jar"]

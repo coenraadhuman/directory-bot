@@ -1,7 +1,6 @@
 package io.github.coenraadhuman.directory.bot.filebot;
 
 import io.github.coenraadhuman.directory.bot.configuration.Properties;
-import io.github.coenraadhuman.directory.bot.configuration.Property;
 import io.github.coenraadhuman.directory.bot.utility.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +61,7 @@ public class FilebotRenameInvoker {
 
     private static List<String> runFilebot(String fileAbsolutePath, String targetDirectory, String format, String database)  {
         try {
-            var processBuilder = new ProcessBuilder("filebot", "-rename", fileAbsolutePath, "--action", "test", "--output", targetDirectory, "--format", format, "--db", database);
+            var processBuilder = new ProcessBuilder( "filebot", "-rename", fileAbsolutePath, "--action", "test", "--output", targetDirectory, "--format", format, "--db", database);
             Process process = null;
             process = processBuilder.start();
             var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
