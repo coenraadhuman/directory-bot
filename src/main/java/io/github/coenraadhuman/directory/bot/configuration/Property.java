@@ -8,6 +8,7 @@ public enum Property {
     DIRECTORY_BOT_DATABASE_CONNECTION("database.connection", null), // Used internally
     DIRECTORY_BOT_SINGLE_EXECUTION("single.execution", "false"),
     DIRECTORY_BOT_SYMLINK_CREATION_AVOID_VALID_OVERWRITE("symlink.creation.avoid.valid.overwrite", "true"),
+    DIRECTORY_BOT_SKIP_FILE_EXTENSIONS("skip.file.extensions", null),
     DIRECTORY_BOT_FILEBOT_RENAME_ENABLE("filebot.rename.enable", "false"),
     DIRECTORY_BOT_FILEBOT_RENAME_FORMAT("filebot.rename.format", "{ plex.id }"),
     DIRECTORY_BOT_FILEBOT_SKIP_RENAME_FAILED_FILES("filebot.skip.rename.failed.files", "true"),

@@ -3,6 +3,7 @@ package io.github.coenraadhuman.directory.bot.file.manager;
 import io.github.coenraadhuman.directory.bot.configuration.Properties;
 import io.github.coenraadhuman.directory.bot.filebot.FilebotRenameInvoker;
 import io.github.coenraadhuman.directory.bot.utility.Checksum;
+import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,12 +19,14 @@ public class SymlinkCreation {
 
     private static final Logger log = LoggerFactory.getLogger(SymlinkCreation.class);
 
+    private final Jdbi jdbi;
     private final Properties properties;
     private final Path sourceDirectory;
     private final Path targetDirectory;
     private final Path sourceFile;
 
-    public SymlinkCreation(Properties properties, Path sourceDirectory, Path targetDirectory, Path sourceFile) {
+    public SymlinkCreation(Jdbi jdbi, Properties properties, Path sourceDirectory, Path targetDirectory, Path sourceFile) {
+        this.jdbi = jdbi;
         this.properties = properties;
         this.sourceDirectory = sourceDirectory;
         this.targetDirectory = targetDirectory;
@@ -31,9 +34,8 @@ public class SymlinkCreation {
     }
     
     public void create() {
-
         final Optional<String> renameAbsolutePath = properties.getFlagProperty(DIRECTORY_BOT_FILEBOT_RENAME_ENABLE)
-                ? FilebotRenameInvoker.invoke(properties, sourceFile.toString(), targetDirectory.toString())
+                ? FilebotRenameInvoker.invoke(jdbi, properties, sourceFile.toString(), sourceFile.getFileName().toString(), targetDirectory.toString())
                 : Optional.empty();
 
         if (properties.getFlagProperty(DIRECTORY_BOT_FILEBOT_RENAME_ENABLE) && properties.getFlagProperty(DIRECTORY_BOT_FILEBOT_SKIP_RENAME_FAILED_FILES) && renameAbsolutePath.isEmpty()) {

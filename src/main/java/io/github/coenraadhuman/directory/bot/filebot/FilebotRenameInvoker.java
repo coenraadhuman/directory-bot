@@ -1,7 +1,10 @@
 package io.github.coenraadhuman.directory.bot.filebot;
 
 import io.github.coenraadhuman.directory.bot.configuration.Properties;
+import io.github.coenraadhuman.directory.bot.persistence.FileRenameDao;
+import io.github.coenraadhuman.directory.bot.persistence.FileRenamed;
 import io.github.coenraadhuman.directory.bot.utility.StringUtils;
+import org.jdbi.v3.core.Jdbi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import static io.github.coenraadhuman.directory.bot.configuration.Property.DIRECTORY_BOT_FILEBOT_RENAME_ENABLE;
 import static io.github.coenraadhuman.directory.bot.configuration.Property.DIRECTORY_BOT_FILEBOT_RENAME_FORMAT;
@@ -27,28 +29,27 @@ public class FilebotRenameInvoker {
     private FilebotRenameInvoker() {
     }
 
-    public static Optional<String> invoke(Properties properties, String filePath, String targetDirectory) {
+    public static Optional<String> invoke(Jdbi jdbi, Properties properties, String filePath, String fileName, String targetDirectory) {
         if (!properties.getFlagProperty(DIRECTORY_BOT_FILEBOT_RENAME_ENABLE) || properties.getProperty(DIRECTORY_BOT_FILEBOT_RENAME_FORMAT).isEmpty()) {
             return Optional.empty();
         }
 
-        // Todo: perhaps better to supply format options:
-        var format = properties.getProperty(DIRECTORY_BOT_FILEBOT_RENAME_FORMAT).get();
-
         try {
-            var tv = runFilebot(filePath, targetDirectory, format, "TheTVDB");
-            var movies = runFilebot(filePath, targetDirectory, format, "TheMovieDB");
+            var doa = jdbi.onDemand(FileRenameDao.class);
 
-            var lines = Stream.concat(tv.stream(), movies.stream()).toList();
+            var storedRename = doa.findByFileName(fileName).map(FileRenamed::renamedPath);
 
-            for (var output : lines) {
-                var matcherFromTo = FROM_TO_PATTERN.matcher(output);
-                var matcherSkippedBecause = SKIPPED_BECAUSE_PATTERN.matcher(output);
+            if (storedRename.isPresent()) {
+                return storedRename;
+            }
 
-                if (matcherFromTo.find()) {
-                    return Optional.of(matcherFromTo.group(2));
-                } else if (matcherSkippedBecause.find()) {
-                    return Optional.of(matcherSkippedBecause.group(2));
+            for (var database : List.of("TheTVDB", "TheMovieDB", "AniDB", "TheMovieDB::TV")) {
+                // Todo: perhaps better to supply format options:
+                var result = runFilebot(filePath, targetDirectory, properties.getProperty(DIRECTORY_BOT_FILEBOT_RENAME_FORMAT).get(), database);
+
+                if (result.isPresent()) {
+                    doa.insertOrReplace(new FileRenamed(fileName, result.get()));
+                    return result;
                 }
             }
 
@@ -59,7 +60,7 @@ public class FilebotRenameInvoker {
         return Optional.empty();
     }
 
-    private static List<String> runFilebot(String fileAbsolutePath, String targetDirectory, String format, String database)  {
+    private static Optional<String> runFilebot(String fileAbsolutePath, String targetDirectory, String format, String database)  {
         try {
             var processBuilder = new ProcessBuilder( "filebot", "-rename", fileAbsolutePath, "--action", "test", "--output", targetDirectory, "--format", format, "--db", database);
             Process process = null;
@@ -76,12 +77,22 @@ public class FilebotRenameInvoker {
             }
 
             process.waitFor();
-            return lines;
+
+            for (var output : lines) {
+                var matcherFromTo = FROM_TO_PATTERN.matcher(output);
+                var matcherSkippedBecause = SKIPPED_BECAUSE_PATTERN.matcher(output);
+
+                if (matcherFromTo.find()) {
+                    return Optional.of(matcherFromTo.group(2));
+                } else if (matcherSkippedBecause.find()) {
+                    return Optional.of(matcherSkippedBecause.group(2));
+                }
+            }
         } catch (IOException | InterruptedException e) {
             log.error("Executing filebot: {}", e.getMessage());
         }
 
-        return List.of();
+        return Optional.empty();
     }
 }
 

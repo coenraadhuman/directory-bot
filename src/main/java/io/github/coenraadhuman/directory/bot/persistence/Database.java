@@ -2,6 +2,7 @@ package io.github.coenraadhuman.directory.bot.persistence;
 
 import org.flywaydb.core.Flyway;
 import org.jdbi.v3.core.Jdbi;
+import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,7 @@ public class Database {
     public Jdbi connection() {
         if (jdbi == null) {
             jdbi = Jdbi.create(databaseConnection, user, password);
+            jdbi.installPlugin(new SqlObjectPlugin());
         }
         return jdbi;
     }
