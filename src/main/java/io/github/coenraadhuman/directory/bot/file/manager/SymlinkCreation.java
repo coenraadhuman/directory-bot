@@ -1,7 +1,7 @@
 package io.github.coenraadhuman.directory.bot.file.manager;
 
 import io.github.coenraadhuman.directory.bot.configuration.Properties;
-import io.github.coenraadhuman.directory.bot.execution.ExternalRenameInvoker;
+import io.github.coenraadhuman.directory.bot.filebot.FilebotRenameInvoker;
 import io.github.coenraadhuman.directory.bot.utility.Checksum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Instant;
 import java.util.Optional;
 
 import static io.github.coenraadhuman.directory.bot.configuration.Property.*;
@@ -33,16 +32,17 @@ public class SymlinkCreation {
     
     public void create() {
 
-        final var renameAbsolutePath = properties.getProperty(DIRECTORY_BOT_RENAME_COMMAND)
-                .flatMap(command -> ExternalRenameInvoker.invoke(sourceFile.toString(), sourceFile.getFileName().toString(), sourceDirectory.toString(), targetDirectory.toString(), command))
-                .map(Paths::get);
+        final Optional<String> renameAbsolutePath = properties.getFlagProperty(DIRECTORY_BOT_FILEBOT_RENAME_ENABLE)
+                ? FilebotRenameInvoker.invoke(properties, sourceFile.toString(), targetDirectory.toString())
+                : Optional.empty();
 
-        if (properties.getFlagProperty(DIRECTORY_BOT_SKIP_RENAME_FAILED_FILES) && properties.getProperty(DIRECTORY_BOT_RENAME_COMMAND).isPresent() && renameAbsolutePath.isEmpty()) {
+        if (properties.getFlagProperty(DIRECTORY_BOT_FILEBOT_RENAME_ENABLE) && properties.getFlagProperty(DIRECTORY_BOT_FILEBOT_SKIP_RENAME_FAILED_FILES) && renameAbsolutePath.isEmpty()) {
             log.error("Could not rename: {}", sourceFile);
             return;
         }
 
         final var symlinkAbsolutePath = renameAbsolutePath
+                .map(Paths::get)
                 .orElse(Paths.get(sourceFile.getParent().toString().replace(sourceDirectory.toString(), targetDirectory.toString()), sourceFile.getFileName().toString()));
 
         final var symlinkRootDirectory = symlinkAbsolutePath.getParent();

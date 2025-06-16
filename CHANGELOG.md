@@ -17,6 +17,18 @@
       <td colspan="7"><em><strong>Unreleased</strong></em>
     </tr>
     <tr>
+      <td>0.13.0</td>
+      <td>Feature</td>
+      <td>Improved integration with filebot for media renames feature.</td>
+      <td> </td>
+      <td> </td>
+      <td><a href="mailto:coenraad.human@proton.me">Coenraad Human</a></td>
+      <td><a href="mailto:coenraad.human@proton.me">Coenraad Human</a></td>
+    </tr>
+    <tr>
+      <td colspan="7"><em><strong>Release: 0.12.0</strong></em></td>
+    </tr>
+    <tr>
       <td>0.12.0</td>
       <td>Feature</td>
       <td>Provide absolute file path for rename.</td>
